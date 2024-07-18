@@ -9,6 +9,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import NoSuchElementException, WebDriverException
 
 chrome_options = webdriver.ChromeOptions()
+# chrome_options.add_argument('headless')
 chrome_options.add_argument('disable-notifications') # Disable 'This page wants to show notification prompt'
 chrome_options.add_argument('start-maximized')
 driver = webdriver.Chrome(options=chrome_options)

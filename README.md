@@ -3,11 +3,11 @@ Python program for sending mass messages to users in messenger through selenium.
  
 - Write the content you want to send at message.txt file  
 - Add image as an attachment through <img>image_relative_path_wrt_main.py</img>  
-- Add `chrome_options.add_argument('headless')` to run the script without any browser.  
+- Uncomment `chrome_options.add_argument('headless')` at line 12 to run the script headless i.e. without any browser.  
 
 ---
 
-- <b>send_message_to_user</b>(user_id, message_text, images_list=None)
+- <b>send_message_to_user</b>(user_id, message_text, images_list=None)  
 &emsp;&emsp;Load user message section, fill the message and images and send to the user.  
 &emsp;&emsp;user_id is the unique identifier associated with a user. It can be discovered by visiting the facebook page of that user and extracting from the URI  
   
@@ -19,7 +19,7 @@ Python program for sending mass messages to users in messenger through selenium.
 &emsp;&emsp;csv file must contain 'User_id' column for the default program to run  
 &emsp;&emsp;images 
 
-- <b>send_message_list</b>(users_list, message_text, images=None)
+- <b>send_message_list</b>(users_list, message_text, images=None)  
 &emsp;&emsp;Sends messages to users through user_ids list.  
 
 ---
