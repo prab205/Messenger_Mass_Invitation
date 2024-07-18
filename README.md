@@ -4,6 +4,8 @@ Python program for sending mass messages to users in messenger through selenium.
 - Write the content you want to send at message.txt file  
 - Add image as an attachment through <img>image_relative_path_wrt_main.py</img>  
 - Uncomment `chrome_options.add_argument('headless')` at line 12 to run the script headless i.e. without any browser.  
+  
+**The script cannot detect wrong credentials.**
 
 ---
 
