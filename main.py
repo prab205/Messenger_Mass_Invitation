@@ -6,7 +6,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.common.exceptions import NoSuchElementException, WebDriverException
+from selenium.common.exceptions import NoSuchElementException, WebDriverException, InvalidArgumentException
 
 chrome_options = webdriver.ChromeOptions()
 # chrome_options.add_argument('headless')
@@ -60,7 +60,7 @@ def send_message_to_user(user_id, message_text, images_list=None):
     except NoSuchElementException:
         print(f"\tCannot find message box. Failed to send to user {user_id}")
     except WebDriverException as e:
-        print(f"**WebDriver Exception at {user_id}, ",e)
+        print(f"\tWebDriver Exception at {user_id}, ",e)
         exit(-1)
     except Exception as e:
         print(f"Failed to send for user {user_id}, ",e)
@@ -80,10 +80,14 @@ def send_message_list(users_list, message_text, images_list=None):
         send_message_to_user(user_id, message_text, images)
 
 def attach_image(img_url):
-    attach_button = driver.find_element(By.XPATH, '//input[@type="file"]')
-    attach_button.send_keys(os.path.join(os.getcwd(), img_url))
-    time.sleep(5)
-
+    try:
+        full_path = os.path.join(os.getcwd(), img_url) 
+        attach_button = driver.find_element(By.XPATH, '//input[@type="file"]')
+        attach_button.send_keys(full_path)
+        time.sleep(5)
+    except InvalidArgumentException as e:
+        print(f'File not found: {full_path}')
+        exit(-1)
 
 if __name__ == "__main__":
     email = 'prabinpaudel43@gmail.com'
@@ -109,4 +113,5 @@ if __name__ == "__main__":
     user_ids = ['jinpaudel']
     send_message_list(user_ids, message_text, images)
 
+    print("\n\n")
     driver.quit()
