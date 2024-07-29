@@ -2,10 +2,26 @@
     "messenger":{
         "headless":false,
         "email":"prabinpaudel43@gmail.com",
-        "credentialFile":"confidential/text",
-        "contentFiles":["resources/message.txt"],
+        "credentialFile":"resources/password",
+        "contentFiles":["resources/1st.txt", "resources/2nd.txt"],
         "userIDList": [],
-        "userCsvFile":"resources/sample.csv",
-        "csvIndex":"User_id"
+        "userCsvFile":"resources/csv/sample.csv",
+        "csvHeader":"User_id"
+    },
+    "image":{
+        "imageCreation": true,
+        "createOnlyImage": false,
+        "textForCreateOnlyImage": null,
+        "invitationSource":"resources/images/Invitation_Source.png",
+        "generatedImageName":"resources/images/Invitation1.png",
+        "viewGeneratedImage":false,
+        "overwriteIfExists": true,
+        "xCoordinate":null,
+        "yCoordinate":1360,
+        "rgb_color":[0,0,0],
+        "font": "resources/GrandHotel-Regular.ttf",
+        "fontSize":100,
+        "csvUserNameHeader":"UserName",
+        "prefixToAdd":"Leo "
     }
 }
