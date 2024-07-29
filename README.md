@@ -22,8 +22,9 @@ Python program for sending mass messages to users in messenger through selenium.
 &emsp;&emsp;To send message directly through user_id, add the userId in `userIDList`  
 &emsp;&emsp;To send message to list of users from csv, add the file in `userCsvFile` and write the userId header in `csvHeader`  
   
-  
-**createImage.py**
+---
+
+**createImage.py**  
 Embeds text in an image.  
 - <b>createInvitationCard</b>(srcImg, text, destImg, overwrite=False, cordinates=(None, None), color=(0,0,0), fontPath=None, fontSize=50, display=False)  
 &emsp;&emsp;Executed only when `imageCreation:true`  

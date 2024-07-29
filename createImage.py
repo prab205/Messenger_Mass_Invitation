@@ -17,6 +17,8 @@ def createInvitationCard(srcImg, text, destImg, overwrite=False, cordinates=(Non
         try:
             #loads the font as well as the fontsize if font is provided by user
             fontVar = ImageFont.truetype(fontPath, fontSize)
+            if not text or len(text) == 0:
+                raise TypeError("No any text provided")
 
             #if any one cordinate is missing, then centers text at that cordinate.
             if cordinates[0] and cordinates[1]:
@@ -44,6 +46,8 @@ def createInvitationCard(srcImg, text, destImg, overwrite=False, cordinates=(Non
 
     else:
         try:
+            if not text or len(text) == 0:
+                raise TypeError("No any text provided")
             if cordinates[0] and cordinates[1]:
                 editableImage.text((cordinates[0], cordinates[1]), text,  fill=color)
                 img.save(destImg)

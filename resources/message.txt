@@ -1,4 +1,0 @@
-Hello
-This is a test message
-<img>resources/Futsal program.png</img>
-<img>resources/Futsal program.png</img>

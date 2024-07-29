@@ -4,26 +4,26 @@ import pandas as pd
 from createImage import createInvitationCard
 from send_to_messenger import send_to_messenger
 
-def send_without_image_creation(m1, userCsvFile, csvIndex, contentFiles):
+def send_without_image_creation(m1, userCsvFile, csvHeader, contentFiles):
     df = pd.read_csv(userCsvFile)
     print(f"Processing {userCsvFile}")
-    for userID in df[csvIndex]:
+    for userID in df[csvHeader]:
         for file in contentFiles:
             with open(file, 'r') as file:
                 message_text = file.read()
             m1.send_message_to_user(userID, message_text) 
 
-def send_with_image_creation(m1, userCsvFile, csvIndex, contentFiles, image_dictionary):
-    _, _, _, invitationSource, generatedImageName, viewGeneratedImage, overwriteIfExists, xCoordinate, yCoordinate, rgb_color, font, fontSize, csvUserNameIndex, prefixToAdd = image_dictionary.values()
+def send_with_image_creation(m1, userCsvFile, csvHeader, contentFiles, image_dictionary):
+    _, _, _, invitationSource, generatedImageName, viewGeneratedImage, overwriteIfExists, xCoordinate, yCoordinate, rgb_color, font, fontSize, csvUserNameHeader, prefixToAdd = image_dictionary.values()
 
     df = pd.read_csv(userCsvFile)
     for index, row in df.iterrows():
         try:
-            createInvitationCard(srcImg=invitationSource, text=prefixToAdd + row[csvUserNameIndex], destImg=generatedImageName, overwrite=overwriteIfExists, cordinates=(xCoordinate, yCoordinate), color=tuple(rgb_color), fontPath=font, fontSize=fontSize, display=viewGeneratedImage)
+            createInvitationCard(srcImg=invitationSource, text=prefixToAdd + row[csvUserNameHeader], destImg=generatedImageName, overwrite=overwriteIfExists, cordinates=(xCoordinate, yCoordinate), color=tuple(rgb_color), fontPath=font, fontSize=fontSize, display=viewGeneratedImage)
             for file in contentFiles:
                 with open(file, 'r') as file:
                     message_text = file.read()
-                m1.send_message_to_user(row[csvIndex], message_text)
+                m1.send_message_to_user(row[csvHeader], message_text)
             os.remove(generatedImageName)
         except KeyError as e:
             print(f"Keyerror, {e} column mentioned at line {e.__traceback__.tb_lineno} doesnot exist in csv file")
@@ -36,12 +36,13 @@ if __name__ == "__main__":
     with open('variables.json') as varFiles:
         variables = json.load(varFiles)
 
-    if variables['image']['createOnlyImage']:
+    if variables['image']['imageCreation'] and variables['image']['createOnlyImage']:
         _, _, textForCreateOnlyImage, invitationSource, generatedImageName, viewGeneratedImage, overwriteIfExists, xCoordinate, yCoordinate, rgb_color, font, fontSize, _, _ = variables['image'].values()
         createInvitationCard(srcImg=invitationSource, text=textForCreateOnlyImage, destImg=generatedImageName, overwrite=overwriteIfExists, cordinates=(xCoordinate, yCoordinate), color=tuple(rgb_color), fontPath=font, fontSize=fontSize, display=True)
+        os.remove(generatedImageName)
         exit(-1)
     
-    headless, email, credentialFile, contentFiles, userIDList, userCsvFile, csvIndex = variables['messenger'].values()
+    headless, email, credentialFile, contentFiles, userIDList, userCsvFile, csvHeader = variables['messenger'].values()
 
     m1 = send_to_messenger(headless=headless)
 
@@ -58,9 +59,9 @@ if __name__ == "__main__":
     if userCsvFile:
         try:
             if variables['image']['imageCreation']:
-                send_with_image_creation(m1, userCsvFile, csvIndex, contentFiles, variables['image'])
+                send_with_image_creation(m1, userCsvFile, csvHeader, contentFiles, variables['image'])
             else:
-                send_without_image_creation(m1, userCsvFile, csvIndex, contentFiles)
+                send_without_image_creation(m1, userCsvFile, csvHeader, contentFiles)
         except FileNotFoundError as e:
             print(f"File {userCsvFile} not found. Please verify its location")             
         except KeyError as e:
