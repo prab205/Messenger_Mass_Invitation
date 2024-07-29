@@ -1,0 +1,11 @@
+{
+    "messenger":{
+        "headless":false,
+        "email":"prabinpaudel43@gmail.com",
+        "credentialFile":"confidential/text",
+        "contentFiles":["resources/message.txt"],
+        "userIDList": [],
+        "userCsvFile":"resources/sample.csv",
+        "csvIndex":"User_id"
+    }
+}
