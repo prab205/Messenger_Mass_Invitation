@@ -73,9 +73,20 @@ class send_to_messenger:
                 continue
         raise TimeoutException(f"None of the known message box selectors matched: {MESSAGE_BOX_SELECTORS}")
 
+    # MFA/checkpoint interstitials don't show the login form either, so
+    # "no login field" alone isn't proof of being logged in — check the URL
+    # for the checkpoint flow explicitly instead of treating it as success.
+    CHECKPOINT_URL_MARKERS = ['checkpoint', 'two_step_verification', 'login/save-device']
+
+    def on_checkpoint(self):
+        url = self.driver.current_url
+        return any(marker in url for marker in self.CHECKPOINT_URL_MARKERS)
+
     def is_logged_in(self):
+        if self.on_checkpoint():
+            return False
         try:
-            self.driver.find_element(By.ID, 'email')
+            self.driver.find_element(By.NAME, 'email')
             return False
         except NoSuchElementException:
             return True
@@ -85,8 +96,8 @@ class send_to_messenger:
         landing back on a login-like page instead of the logged-in session.
         Give a human time to clear it manually, polling instead of blocking
         on a single long wait so we can bail out the moment it clears."""
-        print(f"\tLogin page detected after submitting credentials (MFA/bot checkup). "
-              f"Waiting up to {timeout_seconds}s for manual login...")
+        print(f"\tNot logged in after submitting credentials (current url: {self.driver.current_url}). "
+              f"Waiting up to {timeout_seconds}s for manual login/MFA...")
         waited = 0
         while waited < timeout_seconds:
             if self.is_logged_in():
@@ -102,15 +113,15 @@ class send_to_messenger:
         if self.is_logged_in():
             return "Already logged in (restored session)"
 
-        email_element = self.wait.until(EC.presence_of_element_located((By.ID, 'email')))
+        email_element = self.wait.until(EC.presence_of_element_located((By.NAME, 'email')))
         email_element.send_keys(email)
 
-        pass_element = self.driver.find_element(By.ID, 'pass')
+        pass_element = self.driver.find_element(By.NAME, 'pass')
         pass_element.send_keys(password)
 
         pass_element.send_keys(Keys.RETURN)
         try:
-            self.wait.until(EC.invisibility_of_element_located((By.ID, 'pass')))
+            self.wait.until(EC.invisibility_of_element_located((By.NAME, 'pass')))
         except TimeoutException:
             pass
 
@@ -172,7 +183,6 @@ class send_to_messenger:
             print(f"Successfully sent to {user_id}")
         except (NoSuchElementException, TimeoutException):
             print(f"\tCannot find message box. Failed to send to user {user_id}")
-            self.save_debug_snapshot(user_id)
             self.current_user_id = None
         except WebDriverException as e:
             # Log and move on to the next user instead of killing the whole batch
@@ -181,14 +191,6 @@ class send_to_messenger:
             self.current_user_id = None
         except Exception as e:
             print(f"Failed to send for user {user_id}, ",e)
-
-    def save_debug_snapshot(self, user_id):
-        try:
-            path = os.path.abspath(f"debug_{user_id}.png")
-            self.driver.save_screenshot(path)
-            print(f"\tSaved debug screenshot to {path} (current url: {self.driver.current_url})")
-        except WebDriverException:
-            pass
 
     def process_text_content(self, message_text):
         img_count = message_text.count('<img>')
