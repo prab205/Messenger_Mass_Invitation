@@ -1,0 +1,6 @@
+chrome_profile/
+resources/password
+confidential/
+resources/
+.venv/
+__pycache__

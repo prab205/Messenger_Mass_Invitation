@@ -1,12 +1,15 @@
 {
     "messenger":{
         "headless":false,
+        "profileDir":"chrome_profile",
         "email":"prabinpaudel43@gmail.com",
         "credentialFile":"resources/password",
         "contentFiles":["resources/1st.txt", "resources/2nd.txt"],
         "userIDList": [],
         "userCsvFile":"resources/csv/sample.csv",
-        "csvHeader":"User_id"
+        "csvHeader":"User_id",
+        "minDelaySeconds":3,
+        "maxDelaySeconds":7
     },
     "image":{
         "imageCreation": true,
